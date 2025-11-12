@@ -30,5 +30,13 @@
     }
 
     ?>
+
+    <main>
+        <?php 
+
+            echo $_GET["param"];
+
+        ?>
+    </main>
 </body>
 </html>
