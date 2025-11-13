@@ -1,0 +1,17 @@
+{
+    "name": "usuario/e-coomerce-painel",
+    "autoload": {
+        "psr-4": {
+            "Usuario\\ECoomercePainel\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Vitor-Hgm",
+            "email": "mvitorhugo862@gmail.com"
+        }
+    ],
+    "require": {
+        "phpmailer/phpmailer": "^7.0"
+    }
+}

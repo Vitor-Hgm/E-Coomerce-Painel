@@ -24,9 +24,13 @@
 <body>
     <?php       
     
-    if (($_POST) && (!isset($_SESSION["usuario"]))) {
+    if (($_POST) && (!isset($_SESSION["ecoomercepainel"])) && (!$_POST)) {
 
-        require "../app/controllers/IndexController.php";
+        require "../app/views/index/login.php";
+    }else if ((!isset($_SESSION["ecoomercepainel"])) && ($_POST)) {
+
+    }else {
+
     }
 
     ?>
