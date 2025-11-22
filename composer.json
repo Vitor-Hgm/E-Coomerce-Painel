@@ -2,7 +2,7 @@
     "name": "usuario/e-coomerce-painel",
     "autoload": {
         "psr-4": {
-            "Usuario\\ECoomercePainel\\": "src/"
+            "app\\": "app/"
         }
     },
     "authors": [

@@ -12,24 +12,25 @@ class Login
         $this->conn = $db;
     }
 
-   public function autenticar($email, $senha)
-{
-    $sql = "SELECT * FROM users WHERE email = :email LIMIT 1";
-    $stmt = $this->conn->prepare($sql);
-    $stmt->bindValue(":email", $email);
-    $stmt->execute();
+    public function autenticar($email, $senha)
+    {
+        $sql = "SELECT * FROM users WHERE email = :email LIMIT 1";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindValue(":email", $email);
+        $stmt->execute();
 
-    if ($stmt->rowCount() > 0) {
+        // 🚫 NÃO USE rowCount() COM SELECT EM MYSQL
         $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // Verifica a senha criptografada
+        if (!$usuario) {
+            return false; // email não existe
+        }
+
+        // 🔐 Verifica a senha correta
         if (password_verify($senha, $usuario['password'])) {
             return $usuario;
         }
+
+        return false;
     }
-
-    return false;
-}
-
-
 }

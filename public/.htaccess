@@ -1,8 +1,7 @@
-    Options -Indexes
+RewriteEngine On
 
-    RewriteEngine On
-    RewriteBase /E-Coomerce-Painel/public/
+RewriteBase /E-Coomerce-Painel/public/
 
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^(.+)$ index.php?param=$1 [QSA,L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.+)$ index.php?param=$1 [QSA,L]

@@ -1,9 +1,8 @@
 <?php
 
+namespace app\Controllers;
 
-namespace App\Controllers;
-
-use App\Models\Login;
+use app\Models\Login;
 
 class LoginController
 {
@@ -17,38 +16,36 @@ class LoginController
     public function index()
     {
         require __DIR__ . '/../views/index/login.php';
-
-
     }
 
-   public function entrar()
-{
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    public function entrar()
+    {
 
-        $email = $_POST['email'] ?? "";
-        $senha = $_POST['senha'] ?? "";
+        
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-        $usuario = $this->model->autenticar($email, $senha);
+            $email  = $_POST['email'] ?? "";
+            $senha  = $_POST['senha'] ?? "";
 
+            $usuario = $this->model->autenticar($email, $senha);
 
-        if ($usuario) {
-    
-            $_SESSION["ecoomercepainel"] = $usuario;
+            if ($usuario) {
 
-            // REDIRECIONA PARA O PAINEL
-            header("Location: "  . "views/index/index.php");
-            exit;
+                $_SESSION["ecoomercepainel"] = $usuario;
+
+                // REDIRECIONA pelo sistema de rotas
+                header("Location: /E-Coomerce-Painel/public/index");
+                exit;
+
+            } else {
+                $erro = "E-mail ou senha incorretos.";
+                require __DIR__ . '/../views/index/login.php';
+            }
+
         } else {
-            $erro = "E-mail ou senha incorretos.";
-           require __DIR__ . '/../views/index/login.php';
-
+            $this->index();
         }
-    } else {
-        $this->index();
     }
-}
-
-
 
     public function sair()
     {

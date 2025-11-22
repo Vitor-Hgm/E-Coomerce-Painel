@@ -1,6 +1,6 @@
 <?php
 
-namespace Core;
+namespace app\Core;
 
 class Router
 {
@@ -19,13 +19,12 @@ class Router
         $controllerName = ucfirst($param[0]) . "Controller";
         $method = $param[1] ?? "index";
 
-        $namespace = "App\\Controllers\\" . $controllerName;
+        $namespace = "app\\Controllers\\" . $controllerName;
 
         if (!class_exists($namespace)) {
             die("Controller <b>$controllerName</b> não encontrado.");
         }
 
-        // Agora passa o $db para o controller
         $controller = new $namespace($this->db);
 
         if (!method_exists($controller, $method)) {

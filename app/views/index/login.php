@@ -5,10 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel - Login</title>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-    
     <link rel="stylesheet" href="/E-Coomerce-Painel/public/css/style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Ícones FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 </head>
 
 <body class="login-bg">
@@ -22,22 +26,30 @@
 
             <h3 class="text-center mb-4">Login do Painel</h3>
 
-            <?php if (isset($erro)): ?>
+            <?php if (!empty($erro)): ?>
                 <div class="alert alert-danger text-center">
                     <?= $erro ?>
                 </div>
             <?php endif; ?>
 
-            <form method="POST" action="login/entrar">
+            <form method="POST" action="/E-Coomerce-Painel/public/login/entrar">
 
+                <!-- E-mail -->
                 <div class="mb-3">
                     <label class="form-label">E-mail</label>
                     <input type="email" name="email" class="form-control" required>
                 </div>
 
+                <!-- Senha com botão de mostrar -->
                 <div class="mb-3">
                     <label class="form-label">Senha</label>
-                    <input type="password" name="senha" class="form-control" required>
+                    <div class="input-group">
+                        <input type="password" name="senha" id="senha" class="form-control" required>
+
+                        <span class="input-group-text" id="toggleSenha" style="cursor:pointer;">
+                            <i class="fa-solid fa-eye"></i>
+                        </span>
+                    </div>
                 </div>
 
                 <button type="submit" class="btn btn-primary w-100">Entrar</button>
@@ -47,8 +59,20 @@
         </div>
     </div>
 
-    <!-- BOOTSTRAP JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Script para mostrar/ocultar senha -->
+    <script>
+        const input = document.getElementById("senha");
+        const toggle = document.getElementById("toggleSenha");
+        const icon = toggle.querySelector("i");
+
+        toggle.addEventListener("click", () => {
+            const mostrar = input.type === "password";
+            input.type = mostrar ? "text" : "password";
+
+            icon.classList.remove(mostrar ? "fa-eye" : "fa-eye-slash");
+            icon.classList.add(mostrar ? "fa-eye-slash" : "fa-eye");
+        });
+    </script>
 
 </body>
 </html>

@@ -1,4 +1,9 @@
-<?php 
+<?php
+namespace app\Core;
+
+use PDO;
+use PDOException;
+
 class Conexao {
 
     private static $host = "localhost";
@@ -14,7 +19,6 @@ class Conexao {
                 self::$pass
             );
 
-            // Modo de erro
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             return $pdo;
