@@ -18,10 +18,29 @@
 
 <body>
 
-    <main>
-        <!-- Conteúdo do Dashboard será inserido pelo controller -->
-        <?= $content ?? "Bem-vindo ao painel!" ?>
-    </main>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Painel</a>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <span class="nav-link">Bem-vindo, <?= htmlspecialchars($usuario['email']) ?></span>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="../../public/index.php?param=login/logout">Sair</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
 
+<div class="container mt-5">
+    <h1>Dashboard</h1>
+    <p>Você está logado no painel do sistema.</p>
+
+    <!-- Aqui você pode adicionar cards, tabelas, gráficos etc -->
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

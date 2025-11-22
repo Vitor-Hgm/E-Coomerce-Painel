@@ -1,31 +1,17 @@
 <?php
-    require "../../config/Conexao.php";
-    require "../models/Usuario.php";
+namespace App\Controllers;
 
 class IndexController
 {
-    private string $pageTitle;
+    private $db;
 
-    public function __construct()
+    public function __construct($conn)
     {
-        // Proteção de rota: qualquer controller do painel exige login
-        if (!isset($_SESSION["ecoomercepainel"])) {
-            header("Location: /login/index");
-            exit;
-        }
-
-        // Propriedade encapsulada
-        $this->pageTitle = "Dashboard";
+        $this->db = $conn;
     }
 
     public function index()
     {
-        // Conteúdo que será exibido na view
-        $content = "Bem-vindo ao Painel Administrativo!";
-
-        // Renderiza a view
-        require "../app/views/index/index.php";
+        require __DIR__ . "/../views/index/index.php";
     }
 }
-
-
