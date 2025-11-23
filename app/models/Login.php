@@ -1,5 +1,5 @@
 <?php
-namespace App\Models;
+namespace app\Models;
 
 use PDO;
 
@@ -11,26 +11,28 @@ class Login
     {
         $this->conn = $db;
     }
+public function autenticar($email, $senha)
+{
+    // Buscar usuário pelo e-mail
+    $sql = "SELECT * FROM users WHERE email = :email LIMIT 1";
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bindValue(":email", $email);
+    $stmt->execute();
 
-    public function autenticar($email, $senha)
-    {
-        $sql = "SELECT * FROM users WHERE email = :email LIMIT 1";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bindValue(":email", $email);
-        $stmt->execute();
+    $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // 🚫 NÃO USE rowCount() COM SELECT EM MYSQL
-        $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if (!$usuario) {
-            return false; // email não existe
-        }
-
-        // 🔐 Verifica a senha correta
-        if (password_verify($senha, $usuario['password'])) {
-            return $usuario;
-        }
-
-        return false;
+    if (!$usuario) {
+        return false; // email não encontrado
     }
+
+    
+    // 🔐 Verifica a senha criptografada
+    if (password_verify($senha, $usuario['password'])) {
+        return $usuario; // OK, senha válida
+    }
+
+    return false; // Senha incorreta
+}
+
+
 }

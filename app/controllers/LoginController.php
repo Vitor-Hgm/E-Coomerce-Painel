@@ -20,7 +20,6 @@ class LoginController
 
     public function entrar()
     {
-
         
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 

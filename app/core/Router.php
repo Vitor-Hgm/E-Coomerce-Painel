@@ -13,7 +13,9 @@ class Router
 
     public function run()
     {
-        $param = $_GET["param"] ?? "index/index";
+        // 👇 ROTA PADRÃO É O LOGIN
+        $param = $_GET["param"] ?? "login/index";
+
         $param = explode("/", trim($param, "/"));
 
         $controllerName = ucfirst($param[0]) . "Controller";
@@ -31,6 +33,17 @@ class Router
             die("Método <b>$method</b> não existe em <b>$controllerName</b>.");
         }
 
+        // 🔒 PROTEÇÃO: BLOQUEIA TODAS AS ROTAS SEM LOGIN
+        if ($controllerName !== "LoginController") {
+
+            if (!isset($_SESSION["ecoomercepainel"])) {
+                // SEM BASE_URL — usamos caminho FIXO
+                header("Location: /E-Coomerce-Painel/public/login");
+                exit;
+            }
+        }
+
+        // EXECUTA O CONTROLLER
         $controller->$method();
     }
 }
