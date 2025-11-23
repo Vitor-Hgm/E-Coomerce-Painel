@@ -1,73 +1,73 @@
 <?php
+
 namespace app\Controllers;
 
 use app\Models\Categoria;
 
 class CategoriaController
 {
-    private $db;
     private $model;
 
     public function __construct($db)
     {
-        $this->db = $db;
         $this->model = new Categoria($db);
     }
 
     public function index()
     {
-        // pega todas
         $categorias = $this->model->all();
-        require __DIR__ . "/../Views/categorias/index.php";
+        require __DIR__ . '/../Views/categorias/index.php';
     }
 
     public function create()
     {
-        require __DIR__ . "/../Views/categorias/create.php";
+        require __DIR__ . '/../Views/categorias/create.php';
     }
 
     public function store()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $nome = trim($_POST['nome'] ?? '');
-            if ($nome === '') {
-                $_SESSION['flash_error'] = "O nome da categoria é obrigatório.";
-                header("Location: /E-Coomerce-Painel/public/?param=categoria/create");
-                exit;
-            }
-            $this->model->create($nome);
+            $data = [
+                'name' => $_POST['name'] ?? '',
+                'slug' => $_POST['slug'] ?? '',
+                'description' => $_POST['description'] ?? '',
+                'sort_order' => $_POST['sort_order'] ?? 0,
+                'active' => isset($_POST['active']) ? 1 : 0  // <-- Corrigido
+            ];
+            $this->model->create($data);
+            header("Location: /E-Coomerce-Painel/public/categoria");
+            exit;
         }
-        header("Location: /E-Coomerce-Painel/public/?param=categoria/index");
-        exit;
     }
 
-    public function edit()
+
+    public function edit($id)
     {
-        $id = $_GET['id'] ?? null;
-        if (!$id) { header("Location: /E-Coomerce-Painel/public/?param=categoria/index"); exit; }
         $categoria = $this->model->find($id);
-        require __DIR__ . "/../Views/categorias/edit.php";
+        require __DIR__ . '/../Views/categorias/edit.php';
     }
 
-    public function update()
+    public function update($id)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $id = $_POST['id'] ?? null;
-            $nome = trim($_POST['nome'] ?? '');
-            if ($id && $nome !== '') {
-                $this->model->update($id, $nome);
-            }
+            $data = [
+                'name' => $_POST['name'] ?? '',
+                'slug' => $_POST['slug'] ?? '',
+                'description' => $_POST['description'] ?? '',
+                'sort_order' => $_POST['sort_order'] ?? 0,
+                'active' => isset($_POST['active']) ? 1 : 0  // <-- Corrigido
+            ];
+            $this->model->update($id, $data);
+            header("Location: /E-Coomerce-Painel/public/categoria");
+            exit;
         }
-        header("Location: /E-Coomerce-Painel/public/?param=categoria/index");
-        exit;
     }
 
-    public function delete()
+    public function delete($id)
     {
-        $id = $_GET['id'] ?? null;
-        if ($id) $this->model->delete($id);
-        header("Location: /E-Coomerce-Painel/public/?param=categoria/index");
+        $this->model->delete($id);
+        // Redireciona para a listagem de categorias correta
+        header("Location: /E-Coomerce-Painel/public/categoria");
         exit;
     }
 }
-                    

@@ -5,42 +5,102 @@ use PDO;
 
 class Categoria
 {
-    private $conn;
-    public function __construct($db) { $this->conn = $db; }
+    private $db;
+
+    public function __construct($db)
+    {
+        $this->db = $db;
+    }
 
     public function all()
     {
-        $sql = "SELECT * FROM categories ORDER BY id DESC";
-        $stmt = $this->conn->query($sql);
+        $stmt = $this->db->query("SELECT * FROM categories ORDER BY id DESC");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function find($id)
     {
-        $sql = "SELECT * FROM categories WHERE id = :id LIMIT 1";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute(['id' => $id]);
+        $stmt = $this->db->prepare("SELECT * FROM categories WHERE id = ?");
+        $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function create($nome)
+    public function create($data)
     {
-        $sql = "INSERT INTO categories (nome, created_at, updated_at) VALUES (:nome, NOW(), NOW())";
-        $stmt = $this->conn->prepare($sql);
-        return $stmt->execute(['nome' => $nome]);
+        // Gera slug automático se não tiver
+        if (empty($data['slug'])) {
+            $data['slug'] = $this->gerarSlug($data['name']);
+        }
+
+        // Garante que o slug seja único
+        $data['slug'] = $this->gerarSlugUnico($data['slug']);
+
+        $stmt = $this->db->prepare("INSERT INTO categories (name, slug, active) VALUES (:name, :slug, :active)");
+        $stmt->execute([
+            'name' => $data['name'],
+            'slug' => $data['slug'],
+            'active' => $data['active'] ?? 1
+        ]);
     }
 
-    public function update($id, $nome)
+    public function update($id, $data)
     {
-        $sql = "UPDATE categories SET nome = :nome, updated_at = NOW() WHERE id = :id";
-        $stmt = $this->conn->prepare($sql);
-        return $stmt->execute(['nome' => $nome, 'id' => $id]);
+        // Gera slug automático se não tiver
+        if (empty($data['slug'])) {
+            $data['slug'] = $this->gerarSlug($data['name']);
+        }
+
+        // Garante que o slug seja único, ignorando o próprio ID
+        $data['slug'] = $this->gerarSlugUnico($data['slug'], $id);
+
+        $stmt = $this->db->prepare("UPDATE categories SET name = :name, slug = :slug, active = :active WHERE id = :id");
+        $stmt->execute([
+            'id' => $id,
+            'name' => $data['name'],
+            'slug' => $data['slug'],
+            'active' => $data['active'] ?? 1
+        ]);
     }
 
     public function delete($id)
     {
-        $sql = "DELETE FROM categories WHERE id = :id";
-        $stmt = $this->conn->prepare($sql);
-        return $stmt->execute(['id' => $id]);
+        $stmt = $this->db->prepare("DELETE FROM categories WHERE id = ?");
+        $stmt->execute([$id]);
+    }
+
+    private function gerarSlug($string)
+    {
+        $slug = strtolower(trim($string));
+        $slug = preg_replace('/[^a-z0-9-]/', '-', $slug);
+        $slug = preg_replace('/-+/', '-', $slug);
+        return $slug;
+    }
+
+    // Função para garantir slug único
+    private function gerarSlugUnico($slug, $ignoreId = null)
+    {
+        $baseSlug = $slug;
+        $i = 1;
+
+        while (true) {
+            if ($ignoreId) {
+                $stmt = $this->db->prepare("SELECT COUNT(*) FROM categories WHERE slug = ? AND id != ?");
+                $stmt->execute([$slug, $ignoreId]);
+            } else {
+                $stmt = $this->db->prepare("SELECT COUNT(*) FROM categories WHERE slug = ?");
+                $stmt->execute([$slug]);
+            }
+
+            $count = $stmt->fetchColumn();
+
+            if ($count == 0) {
+                break;
+            }
+
+            $slug = $baseSlug . '-' . $i;
+            $i++;
+        }
+
+        return $slug;
     }
 }

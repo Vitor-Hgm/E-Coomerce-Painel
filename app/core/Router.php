@@ -21,6 +21,9 @@ class Router
         $controllerName = ucfirst($param[0]) . "Controller";
         $method = $param[1] ?? "index";
 
+        // todos os parâmetros extras depois do método
+        $args = array_slice($param, 2);
+
         $namespace = "app\\Controllers\\" . $controllerName;
 
         if (!class_exists($namespace)) {
@@ -35,15 +38,13 @@ class Router
 
         // 🔒 PROTEÇÃO: BLOQUEIA TODAS AS ROTAS SEM LOGIN
         if ($controllerName !== "LoginController") {
-
             if (!isset($_SESSION["ecoomercepainel"])) {
-                // SEM BASE_URL — usamos caminho FIXO
                 header("Location: /E-Coomerce-Painel/public/login");
                 exit;
             }
         }
 
-        // EXECUTA O CONTROLLER
-        $controller->$method();
+        // EXECUTA O MÉTODO PASSANDO ARGUMENTOS
+        $controller->$method(...$args);
     }
 }
