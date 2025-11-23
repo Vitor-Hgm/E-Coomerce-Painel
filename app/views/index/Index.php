@@ -114,10 +114,10 @@ $usuario = $_SESSION["ecoomercepainel"] ?? null;
         </div>
 
         <div class="menu">
-            <a href="#" class="active"><i class="fa-solid fa-chart-line me-2"></i> Dashboard</a>
-            <a href="#"><i class="fa-solid fa-tags me-2"></i> Categorias</a>
-            <a href="#"><i class="fa-solid fa-box me-2"></i> Produtos</a>
-            <a href="#"><i class="fa-solid fa-users me-2"></i> Usuários</a>
+            <a href="/E-Coomerce-Painel/public/index/index" class="active"><i class="fa-solid fa-chart-line me-2"></i> Dashboard</a>
+            <a href="/E-Coomerce-Painel/public/categoria/index"><i class="fa-solid fa-tags me-2"></i> Categorias</a>
+            <a href="/E-Coomerce-Painel/public/produto/index"><i class="fa-solid fa-box me-2"></i> Produtos</a>
+            <a href="/E-Coomerce-Painel/public/usuario/index"><i class="fa-solid fa-users me-2"></i> Usuários</a>
         </div>
     </aside>
 
@@ -183,7 +183,7 @@ $usuario = $_SESSION["ecoomercepainel"] ?? null;
         <hr class="my-5">
 
         <h4 class="fw-bold">Visão geral</h4>
-        <p class="text-muted">Aqui você pode gerenciar categorias, produtos e usuários.</p>
+        <p class="text-muted">Aqui você pode gerenciar categorias, produtos e usuários clicando nos links ao lado.</p>
 
     </main>
 
