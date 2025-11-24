@@ -24,7 +24,7 @@
             align-items: center;
             margin-bottom: 20px;
             border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .dashboard-header h2 {
@@ -43,7 +43,8 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
-        table th, table td {
+        table th,
+        table td {
             vertical-align: middle !important;
         }
 
@@ -56,10 +57,38 @@
             padding: 0.35rem 0.6rem;
             font-size: 0.85rem;
         }
+
+
+        /* BOTÃO BONITO DE VOLTAR */
+        .btn-voltar {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            font-size: 16px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #4b5563, #1f2937);
+            color: white;
+            border: none;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+            text-decoration: none;
+            transition: 0.25s ease;
+        }
+
+        .btn-voltar:hover {
+            background: linear-gradient(135deg, #6b7280, #374151);
+            transform: translateY(-2px);
+            color: white;
+        }
     </style>
 </head>
 
 <body class="p-4">
+
+    <a href="/E-Coomerce-Painel/public/index" class="btn-voltar mb-3">
+        <i class="fa-solid fa-arrow-left"></i> Voltar ao Dashboard
+    </a>
+
 
     <div class="dashboard-header">
         <h2>Categorias</h2>
@@ -137,4 +166,5 @@
     </script>
 
 </body>
+
 </html>

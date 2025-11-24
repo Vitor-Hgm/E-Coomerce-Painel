@@ -1,4 +1,4 @@
-<?php $usuario = $_SESSION["ecoomercepainel"] ?? null; ?>
+<?php $usuarioSessao = $_SESSION["ecoomercepainel"] ?? null; ?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -15,10 +15,11 @@ body { background: #f4f6f9; font-family: 'Segoe UI', sans-serif; }
 .card-form { background: #fff; padding:30px; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1); max-width:800px; margin:auto; }
 .card-form h3 { margin-bottom:20px; font-weight:600; color:#111827; }
 .form-label { font-weight:500; }
-input.form-control, textarea.form-control { border-radius:8px; padding:12px; }
+input.form-control, textarea.form-control, select.form-control { border-radius:8px; padding:12px; }
 button.btn-primary { border-radius:8px; padding:10px 20px; font-weight:500; }
 button.btn-primary i { margin-right:5px; }
 .img-preview { max-width:150px; margin-top:10px; }
+.alert { border-radius:8px; }
 </style>
 </head>
 <body class="p-4">
@@ -32,50 +33,80 @@ button.btn-primary i { margin-right:5px; }
 
 <div class="card-form">
     <h3>Preencha os detalhes do produto</h3>
+
+    <!-- Mensagens de sucesso/erro -->
+    <?php if(!empty($_SESSION['success'])): ?>
+        <div class="alert alert-success"><?= $_SESSION['success']; unset($_SESSION['success']); ?></div>
+    <?php endif; ?>
+    <?php if(!empty($_SESSION['error'])): ?>
+        <div class="alert alert-danger"><?= $_SESSION['error']; unset($_SESSION['error']); ?></div>
+    <?php endif; ?>
+
     <form action="/E-Coomerce-Painel/public/produto/store" method="POST" enctype="multipart/form-data">
-        <div class="mb-3">
-            <label for="name" class="form-label">Nome</label>
-            <input type="text" name="name" id="name" class="form-control" required>
+
+        <!-- Nome e Slug -->
+        <div class="row g-3 mb-3">
+            <div class="col-md-6">
+                <label for="name" class="form-label">Nome</label>
+                <input type="text" name="name" id="name" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+                <label for="slug" class="form-label">Slug</label>
+                <input type="text" name="slug" id="slug" class="form-control" required>
+            </div>
         </div>
-        <div class="mb-3">
-            <label for="slug" class="form-label">Slug</label>
-            <input type="text" name="slug" id="slug" class="form-control" required>
+
+        <!-- Categoria e Preço -->
+        <div class="row g-3 mb-3">
+            <div class="col-md-6">
+                <label for="category_id" class="form-label">Categoria</label>
+                <select name="category_id" id="category_id" class="form-control" required>
+                    <option value="">Selecione uma categoria</option>
+                    <?php foreach($categorias as $c): ?>
+                        <option value="<?= $c['id'] ?>"><?= htmlspecialchars($c['name']) ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label for="price" class="form-label">Preço</label>
+                <input type="number" step="0.01" name="price" id="price" class="form-control" required>
+            </div>
         </div>
-        <div class="mb-3">
-            <label for="category_id" class="form-label">Categoria</label>
-            <select name="category_id" id="category_id" class="form-control" required>
-                <option value="">Selecione uma categoria</option>
-                <?php foreach($categorias as $c): ?>
-                <option value="<?= $c['id'] ?>"><?= htmlspecialchars($c['name']) ?></option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-        <div class="mb-3">
-            <label for="price" class="form-label">Preço</label>
-            <input type="number" step="0.01" name="price" id="price" class="form-control" required>
-        </div>
+
+        <!-- Estoque -->
         <div class="mb-3">
             <label for="stock_quantity" class="form-label">Quantidade em Estoque</label>
             <input type="number" name="stock_quantity" id="stock_quantity" class="form-control" required>
         </div>
+
+        <!-- Descrição -->
         <div class="mb-3">
             <label for="description" class="form-label">Descrição</label>
             <textarea name="description" id="description" class="form-control"></textarea>
         </div>
+
+        <!-- Imagem -->
         <div class="mb-3">
             <label for="image" class="form-label">Imagem</label>
             <input type="file" name="image" id="image" class="form-control" accept="image/*">
             <img id="preview" class="img-preview" src="#" alt="Preview" style="display:none;">
         </div>
-        <div class="form-check mb-3">
-            <input type="checkbox" name="featured" id="featured" class="form-check-input">
-            <label for="featured" class="form-check-label">Destaque</label>
+
+        <!-- Switches -->
+        <div class="form-check form-switch mb-3">
+            <input class="form-check-input" type="checkbox" name="featured" id="featured">
+            <label class="form-check-label" for="featured">Destaque</label>
         </div>
-        <div class="form-check mb-3">
-            <input type="checkbox" name="active" id="active" class="form-check-input" checked>
-            <label for="active" class="form-check-label">Ativo</label>
+        <div class="form-check form-switch mb-3">
+            <input class="form-check-input" type="checkbox" name="active" id="active" checked>
+            <label class="form-check-label" for="active">Ativo</label>
         </div>
-        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-save"></i> Salvar</button>
+
+        <!-- Botão -->
+        <button type="submit" class="btn btn-primary float-end">
+            <i class="fa-solid fa-save"></i> Salvar Produto
+        </button>
+
     </form>
 </div>
 

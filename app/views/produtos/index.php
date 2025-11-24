@@ -1,4 +1,7 @@
-<?php $usuario = $_SESSION["ecoomercepainel"] ?? null; ?>
+<?php $usuario = $_SESSION["ecoomercepainel"] ?? null; 
+$success = $_SESSION['success'] ?? null;
+unset($_SESSION['success']); // Limpa a mensagem após exibir
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -11,11 +14,37 @@
 <style>
 body { background: #f4f6f9; font-family: 'Segoe UI', sans-serif; }
 .dashboard-header { padding: 20px; background: #111827; color: #fff; display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-radius:8px; }
-.dashboard-header h2 { font-size: 22px; font-weight:600; }
 .table img { width: 50px; height: 50px; object-fit: cover; border-radius:4px; }
+
+/* BOTÃO BONITO DE VOLTAR */
+.btn-voltar {
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:10px 18px;
+    font-size:16px;
+    border-radius:10px;
+    background: linear-gradient(135deg, #4b5563, #1f2937);
+    color:white;
+    border:none;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.25);
+    text-decoration:none;
+    transition:0.25s ease;
+}
+.btn-voltar:hover {
+    background: linear-gradient(135deg, #6b7280, #374151);
+    transform: translateY(-2px);
+    color:white;
+}
 </style>
 </head>
 <body class="p-4">
+
+<!-- BOTÃO DE VOLTAR PARA O DASHBOARD -->
+<a href="/E-Coomerce-Painel/public/index" class="btn-voltar mb-3">
+    <i class="fa-solid fa-arrow-left"></i> Voltar ao Dashboard
+</a>
+
 
 <div class="dashboard-header">
     <h2>Lista de Produtos</h2>
@@ -70,33 +99,30 @@ body { background: #f4f6f9; font-family: 'Segoe UI', sans-serif; }
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-// Confirmação bonita de exclusão
 document.querySelectorAll('.btn-excluir').forEach(function(btn){
     btn.addEventListener('click', function(){
         Swal.fire({
-            title: 'Tem certeza?',
-            text: "O produto será excluído permanentemente!",
+            title: 'Deseja realmente excluir este produto?',
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
             confirmButtonText: 'Sim, excluir!',
             cancelButtonText: 'Cancelar'
         }).then((result) => {
             if(result.isConfirmed){
-                window.location.href = btn.dataset.url + '?deleted=1';
+                window.location.href = btn.dataset.url;
             }
         });
     });
 });
 
-// Mensagem de sucesso após exclusão
-<?php if(isset($_GET['deleted']) && $_GET['deleted'] == 1): ?>
+// Mensagem de sucesso se houver
+<?php if($success): ?>
 Swal.fire({
-    title: 'Excluído!',
-    text: 'Produto excluído com sucesso.',
     icon: 'success',
-    confirmButtonText: 'OK'
+    title: 'Sucesso!',
+    text: '<?= addslashes($success) ?>',
+    timer: 2000,
+    showConfirmButton: false
 });
 <?php endif; ?>
 </script>

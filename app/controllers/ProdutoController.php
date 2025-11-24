@@ -1,4 +1,5 @@
 <?php
+
 namespace app\Controllers;
 
 use app\Models\Produto;
@@ -94,10 +95,13 @@ class ProdutoController
             exit;
         }
     }
-
     public function delete($id)
     {
         $this->model->delete($id);
+
+        // Mensagem de sucesso após exclusão
+        $_SESSION['success'] = "Produto excluído com sucesso!";
+
         header("Location: /E-Coomerce-Painel/public/produto");
         exit;
     }

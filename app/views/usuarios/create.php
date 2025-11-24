@@ -1,12 +1,151 @@
-    <div class="container mt-4">
-    <h3>Novo Usuário</h3>
-    <form method="POST" action="/E-Coomerce-Painel/public/?param=usuario/store">
-        <div class="mb-3"><label class="form-label">Nome</label><input name="name" class="form-control" required></div>
-        <div class="mb-3"><label class="form-label">Email</label><input name="email" type="email" class="form-control" required></div>
-        <div class="mb-3"><label class="form-label">Senha</label><input name="password" type="password" class="form-control" required></div>
-        <div class="mb-3"><label class="form-label">Telefone</label><input name="phone" class="form-control"></div>
-        <div class="form-check mb-3"><input name="active" type="checkbox" class="form-check-input" id="active"><label class="form-check-label" for="active">Ativo</label></div>
-        <button class="btn btn-success">Salvar</button>
-        <a class="btn btn-secondary" href="/E-Coomerce-Painel/public/?param=usuario/index">Cancelar</a>
+<?php $usuario = $_SESSION["ecoomercepainel"] ?? null; ?>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Novo Produto - Ecommerce Painel</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.css" rel="stylesheet">
+<style>
+body { background: #f4f6f9; font-family: 'Segoe UI', sans-serif; }
+.dashboard-header { padding: 20px; background: #111827; color: #fff; display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-radius:8px; }
+.dashboard-header h2 { font-size: 22px; font-weight:600; }
+.card-form { background: #fff; padding:30px; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.1); max-width:800px; margin:auto; }
+.card-form h3 { margin-bottom:20px; font-weight:600; color:#111827; }
+.form-label { font-weight:500; }
+input.form-control, textarea.form-control, select.form-control { border-radius:8px; padding:12px; }
+button.btn-primary { border-radius:8px; padding:10px 20px; font-weight:500; }
+button.btn-primary i { margin-right:5px; }
+.img-preview { max-width:150px; margin-top:10px; border-radius:8px; }
+.alert { border-radius:8px; }
+</style>
+</head>
+<body class="p-4">
+
+<div class="dashboard-header">
+    <h2>Novo Produto</h2>
+    <a href="/E-Coomerce-Painel/public/produto" class="btn btn-secondary">
+        <i class="fa-solid fa-arrow-left"></i> Voltar
+    </a>
+</div>
+
+<div class="card-form">
+    <h3>Preencha os detalhes do produto</h3>
+
+    <!-- Mensagens de sucesso/erro -->
+    <?php if(!empty($_SESSION['success'])): ?>
+        <div class="alert alert-success"><?= $_SESSION['success']; unset($_SESSION['success']); ?></div>
+    <?php endif; ?>
+    <?php if(!empty($_SESSION['error'])): ?>
+        <div class="alert alert-danger"><?= $_SESSION['error']; unset($_SESSION['error']); ?></div>
+    <?php endif; ?>
+
+    <form action="/E-Coomerce-Painel/public/produto/store" method="POST" enctype="multipart/form-data">
+
+        <!-- Nome e Slug -->
+        <div class="row g-3 mb-3">
+            <div class="col-md-6">
+                <label for="name" class="form-label">Nome</label>
+                <input type="text" name="name" id="name" class="form-control" placeholder="Nome do produto" required>
+            </div>
+            <div class="col-md-6">
+                <label for="slug" class="form-label">Slug</label>
+                <input type="text" name="slug" id="slug" class="form-control" placeholder="ex: produto-exemplo" required>
+            </div>
+        </div>
+
+        <!-- Categoria -->
+        <div class="mb-3">
+            <label for="category_id" class="form-label">Categoria</label>
+            <select name="category_id" id="category_id" class="form-control" required>
+                <option value="">Selecione uma categoria</option>
+                <?php foreach($categorias as $c): ?>
+                    <option value="<?= $c['id'] ?>"><?= htmlspecialchars($c['name']) ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+
+        <!-- Preço e Estoque -->
+        <div class="row g-3 mb-3">
+            <div class="col-md-6">
+                <label class="form-label">Preço</label>
+                <input type="number" step="0.01" name="price" class="form-control" placeholder="R$ 0,00" required>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Quantidade em Estoque</label>
+                <input type="number" name="stock_quantity" class="form-control" placeholder="0" required>
+            </div>
+        </div>
+
+        <!-- Descrição -->
+        <div class="mb-3">
+            <label for="description" class="form-label">Descrição</label>
+            <textarea name="description" id="description" class="form-control"></textarea>
+        </div>
+
+        <!-- Imagem -->
+        <div class="mb-3">
+            <label for="image" class="form-label">Imagem <small class="text-muted">(jpg, png, max 2MB)</small></label>
+            <input type="file" name="image" id="image" class="form-control" accept="image/*">
+            <img id="preview" class="img-preview" src="#" alt="Preview" style="display:none;">
+        </div>
+
+        <!-- Checkboxes -->
+        <div class="form-check form-switch mb-3">
+            <input class="form-check-input" type="checkbox" name="featured" id="featured">
+            <label class="form-check-label" for="featured">Destaque</label>
+        </div>
+
+        <div class="form-check form-switch mb-3">
+            <input class="form-check-input" type="checkbox" name="active" id="active" checked>
+            <label class="form-check-label" for="active">Ativo</label>
+        </div>
+
+        <!-- Botão -->
+        <button type="submit" class="btn btn-primary float-end">
+            <i class="fa-solid fa-save"></i> Salvar Produto
+        </button>
+
     </form>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+
+    // Summernote editor
+    $('#description').summernote({
+        height:200,
+        placeholder: 'Digite a descrição do produto aqui...',
+        toolbar: [
+            ['style', ['bold', 'italic', 'underline', 'clear']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['insert', ['link', 'picture']]
+        ]
+    });
+
+    // Preview da imagem
+    const inputImage = document.getElementById('image');
+    const preview = document.getElementById('preview');
+
+    inputImage.addEventListener('change', function(){
+        const file = this.files[0];
+        if(file){
+            const reader = new FileReader();
+            reader.onload = function(e){
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            }
+            reader.readAsDataURL(file);
+        } else {
+            preview.style.display = 'none';
+        }
+    });
+
+});
+</script>
+</body>
+</html>

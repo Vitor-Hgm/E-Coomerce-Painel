@@ -20,7 +20,6 @@ class LoginController
 
     public function entrar()
     {
-        
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $email  = $_POST['email'] ?? "";
@@ -30,13 +29,15 @@ class LoginController
 
             if ($usuario) {
 
+                // Salva o usuário logado, inclusive o ROLE
                 $_SESSION["ecoomercepainel"] = $usuario;
 
-                // REDIRECIONA pelo sistema de rotas
+                // Redireciona para o dashboard
                 header("Location: /E-Coomerce-Painel/public/index");
                 exit;
 
             } else {
+
                 $erro = "E-mail ou senha incorretos.";
                 require __DIR__ . '/../views/index/login.php';
             }
